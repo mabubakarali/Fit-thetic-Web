@@ -2,12 +2,11 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "client/dist",
-  "functions": {
-    "api/**": {
-      "includeFiles": "server/dist/**"
-    }
-  },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
     {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
