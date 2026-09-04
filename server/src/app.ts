@@ -10,6 +10,9 @@ import { apiLimiter } from './middlewares/rateLimiter.js';
 
 export const app = express();
 
+// Trust reverse proxy (Vercel / Cloudflare / Nginx) for IP & rate limiting
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(
   helmet({
@@ -20,7 +23,10 @@ app.use(
 // CORS configuration for cookies & auth headers
 app.use(
   cors({
-    origin: [ENV.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, serverless, curl) or any origin in production
+      callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key', 'X-Requested-With'],

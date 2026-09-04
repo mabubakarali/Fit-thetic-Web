@@ -5,6 +5,7 @@ export const apiLimiter = rateLimit({
   max: 500, // Limit each IP to 500 requests per windowMs
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: {
@@ -19,6 +20,7 @@ export const authLimiter = rateLimit({
   max: 30, // 30 login/register attempts per 15 minutes
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: {
@@ -33,6 +35,7 @@ export const bookingLimiter = rateLimit({
   max: 40, // 40 booking attempts per 5 minutes
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: {

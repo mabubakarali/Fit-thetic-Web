@@ -22,11 +22,27 @@ async function bootstrap() {
       isInitialized = true;
     } catch (error) {
       console.error('[Vercel Serverless] Bootstrap initialization error:', error);
+      // Ensure memoryStore is still initialized even if Mongo check throws
+      await memoryStore.initSeed();
+      isInitialized = true;
     }
   }
 }
 
 export default async function handler(req, res) {
-  await bootstrap();
-  return app(req, res);
+  try {
+    await bootstrap();
+    return app(req, res);
+  } catch (err) {
+    console.error('[Vercel Serverless Handler Error]', err);
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'SERVERLESS_HANDLER_ERROR',
+          message: err?.message || 'Serverless invocation error',
+        },
+      });
+    }
+  }
 }
