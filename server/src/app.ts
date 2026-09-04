@@ -41,12 +41,11 @@ if (ENV.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
 
-// Global API rate limit
-app.use('/api', apiLimiter);
-
-// API Routes
+// API Routes - mount at all possible path prefixes for serverless & direct proxy compatibility
 app.use('/api/v1', routes);
-app.use('/api', routes); // Alias for compatibility
+app.use('/v1', routes);
+app.use('/api', routes);
+app.use('/', routes);
 
 // Global Error Handler
 app.use(errorHandler);
